@@ -1,0 +1,266 @@
+@charset "UTF-8";
+.schachText {
+  fill: #838B83;
+  font-size: 2px;
+  font-weight: bold;
+  line-height: 125%;
+  font-family: sans-serif; }
+
+.dunkleFeld {
+  fill: #838B83;
+  stroke: none;
+  shape-rendering: crispEdges; }
+
+.grueneFeld {
+  fill: green;
+  stroke: none;
+  shape-rendering: crispEdges; }
+
+.helleFeld {
+  fill: #e6e6e6;
+  stroke: none;
+  shape-rendering: crispEdges; }
+
+.hgFeld {
+  fill: LightGray;
+  stroke: none; }
+
+svg rect {
+  stroke: inherit;
+  stroke-width: inherit;
+  /*fill: inherit; */ }
+
+.possible-move {
+  fill-opacity: 0.7; }
+
+.consumable {
+  fill: rgba(120, 180, 255, 0.8); }
+
+button {
+  min-height: 24px;
+  max-height: 2em;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  margin-left: 0;
+  padding: 0;
+  color: #8cd7e1;
+  font-family: Futura PT; }
+  button[disabled] {
+    cursor: default; }
+    button[disabled] span.icon {
+      stroke: gray; }
+  button svg {
+    height: 2em;
+    width: 3em; }
+  button span.icon {
+    fill: transparent;
+    stroke: #4d4d4d;
+    stroke-width: 3.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: 400ms all;
+    height: 100%;
+    display: inline-block; }
+  button:hover span {
+    stroke: #3bbbcc;
+    fill: white; }
+
+span#moves {
+  display: inline-block;
+  background: #8cd7e1;
+  height: 24px;
+  padding: 4px 6px;
+  border-radius: 24px;
+  box-shadow: 0px 0px 3px -1px #8cd7e1; }
+
+.toggle-switch {
+  position: absolute;
+  margin-left: -200%; }
+  .toggle-switch ~ button {
+    width: 0;
+    opacity: 0; }
+  .toggle-switch:checked ~ button {
+    display: inline-block;
+    width: 3em;
+    opacity: 1; }
+  .toggle-switch + label {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none; }
+
+input.toggle-switch-round-flat + label {
+  width: 48px;
+  height: 24px;
+  border-radius: 24px;
+  background-color: gray;
+  transition: background 0.4s; }
+  input.toggle-switch-round-flat + label:before, input.toggle-switch-round-flat + label:after {
+    display: block;
+    position: absolute;
+    content: ""; }
+  input.toggle-switch-round-flat + label:before {
+    top: 2px;
+    left: 2px;
+    bottom: 2px;
+    right: 2px;
+    border-radius: 24px;
+    background-color: #fff;
+    transition: background 0.4s; }
+  input.toggle-switch-round-flat + label:after {
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 16px;
+    border-radius: 16px;
+    background-color: gray;
+    transition: margin 0.4s, background 0.4s; }
+
+input.toggle-switch-round-flat:checked + label {
+  background-color: #8cd7e1; }
+  input.toggle-switch-round-flat:checked + label:after {
+    margin-left: 24px;
+    background-color: #3bbbcc; }
+
+body > section.main-grid {
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 1em;
+  grid-gap: 1em;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: start;
+  -ms-grid-columns: (1fr)[2];
+      grid-template-columns: repeat(2, 1fr);
+  -ms-grid-rows: 2em auto;
+      grid-template-rows: 2em auto;
+  grid-template-areas: "meta ." "board history"; }
+  body > section.main-grid .meta {
+    grid-area: meta;
+    -ms-grid-columns: max-content auto;
+        grid-template-columns: max-content auto;
+    grid-template-areas: "teacher moves";
+    grid-gap: 0.8em; }
+    body > section.main-grid .meta #teacher-controls {
+      grid-area: teacher; }
+    body > section.main-grid .meta .moves {
+      grid-area: moves; }
+  body > section.main-grid .board {
+    grid-area: board; }
+    body > section.main-grid .board svg {
+      max-height: 90vh;
+      width: auto; }
+  body > section.main-grid .history {
+    grid-area: history; }
+
+@media (max-width: 960px) {
+  body > section.main-grid {
+    padding: .6em;
+    grid-gap: .6em;
+    -ms-grid-columns: (1fr)[3];
+        grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: "meta meta ." "board board history"; } }
+
+@media (max-width: 740px) {
+  body > section.main-grid {
+    padding: .4em .6em;
+    grid-gap: .6em;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: start;
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    -ms-grid-rows: 2em auto auto;
+        grid-template-rows: 2em auto auto;
+    grid-template-areas: "meta" "board" "history"; } }
+
+@supports (grid-area: any) {
+  body > section.main-grid {
+    display: -ms-grid;
+    display: grid; }
+    body > section.main-grid .meta {
+      display: -ms-grid;
+      display: grid; } }
+
+.debug {
+  display: none; }
+
+.cell {
+  padding: 0 0.2em; }
+
+.hint {
+  font-size: 1em; }
+
+.tz {
+  font-size: 1.2em; }
+  .tz span:before {
+    margin-right: 0.4em; }
+
+ul:first-child {
+  padding: 0;
+  margin: 0; }
+
+.error, .fixed, .fixed\? {
+  padding: 0 0.5em; }
+
+.error {
+  background: orange; }
+
+.fixed {
+  background: rgba(140, 215, 225, 0.4); }
+
+.fixed\? {
+  background: rgba(221, 243, 246, 0.4); }
+
+.error:before {
+  content: '[E] '; }
+
+.fixed:before, .fixed\?:before {
+  content: '[F] '; }
+
+.done:before {
+  content: '\2714'; }
+
+.doing:before {
+  content: '\2248'; }
+
+.not-started:before {
+  content: '\2A2F'; }
+
+#historyParent {
+  display: block;
+  counter-reset: history;
+  border: dotted 4px gray;
+  padding: 4px; }
+  #historyParent ul {
+    list-style: none;
+    margin: 0; }
+    #historyParent ul li {
+      display: inline-block;
+      padding: 0px 3px;
+      margin-left: 2px; }
+      #historyParent ul li:before {
+        content: counter(history) ". ";
+        counter-increment: history;
+        background-color: #4d4d4d;
+        color: white;
+        padding-left: 5px;
+        padding-right: 0; }
+    #historyParent ul span {
+      padding: 0 7px; }
+    #historyParent ul span.black {
+      background: black;
+      color: #e6e6e6; }
+    #historyParent ul span.white {
+      background: #e6e6e6;
+      color: black; }
+
+body {
+  font-family: Futura PT;
+  margin: 0; }
