@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 13);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -80,7 +80,7 @@ exports.default = undefined;
 
 var _utils = __webpack_require__(2);
 
-var _Cell = __webpack_require__(7);
+var _Cell = __webpack_require__(8);
 
 var _Cell2 = _interopRequireDefault(_Cell);
 
@@ -150,9 +150,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _board = __webpack_require__(0);
+var _board2 = __webpack_require__(0);
 
-var _board2 = _interopRequireDefault(_board);
+var _board3 = _interopRequireDefault(_board2);
 
 var _moving = __webpack_require__(3);
 
@@ -160,7 +160,9 @@ var _domBinding = __webpack_require__(4);
 
 var _utils = __webpack_require__(2);
 
-var _locale = __webpack_require__(13);
+var _locale = __webpack_require__(7);
+
+var _locale2 = _interopRequireDefault(_locale);
 
 var _regeneratorRuntime = __webpack_require__(14);
 
@@ -170,38 +172,48 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
+var kingIconsSVG = function kingIconsSVG(kingValue) {
+	return '<span class="icon">\n<svg preserveAspectRatio="xMidYMid meet"  viewBox="0 0 5 5">\n\t<use xlink:href="#' + (+kingValue === 1 ? 'koenigSchwarz_v' : 'koenigWeiss_v') + '"></use>\n</svg>\n</span>';
+};
+// const kingIconsSVG = {
+// 	'-1': `<span class="icon">
+// 	<svg preserveAspectRatio="xMidYMid meet"  viewBox="0 0 5 5">
+// 		<use xlink:href="#koenigSchwarz_v"></use>
+// 	</svg>
+// </span>`,
+// 	'1': `<span class="icon">
+// 			<svg preserveAspectRatio="xMidYMid meet"  viewBox="0 0 5 5">
+// 				<use xlink:href="#koenigSchwarz_v"></use>
+// 			</svg>
+// 		</span>`
+// };
+
 var game = {
 	turn: 1,
 	subscribers: [],
 	kings: {},
-	locale: { ru: {
-			check: { 1: 'Белый', '-1': 'Черный' }, mate: { 1: 'Белому', '-1': 'Черному' }
-		} },
+	locale: _locale2.default.localized.kingMoves,
 	get currentTurnColor() {
 		return this.nMoves % 2 === 0 ? 1 : -1;
 	},
 	get enemyKingCell() {
-		return _board2.default[this.enemyKing.pos.x + ', ' + this.enemyKing.pos.y];
+		return _board3.default[this.enemyKing.pos.x + ', ' + this.enemyKing.pos.y];
 	},
 	get enemyKing() {
 		return this.kings[-this.currentTurnColor];
 	},
 	get currentKingCell() {
-		return _board2.default[this.currentKing.pos.x + ', ' + this.currentKing.pos.y];
+		return _board3.default[this.currentKing.pos.x + ', ' + this.currentKing.pos.y];
 	},
 	get currentKing() {
 		return this.kings[this.currentTurnColor];
 	},
 	set check(king) {
-		// if (king.inDanger)
-		// 	checkmateLabel.innerHTML = `${this.locale.ru.check[king.color]} король под угрозой`;
-		// else checkmateLabel.innerHTML = `${this.locale.ru.check[king.color]} король в безопасности`;
+		if (king.inDanger) _domBinding.checkmateLabel.innerHTML = this.locale.check[king.color] + ' \u043A\u043E\u0440\u043E\u043B\u044C \u043F\u043E\u0434 \u0443\u0433\u0440\u043E\u0437\u043E\u0439';else _domBinding.checkmateLabel.innerHTML = this.locale.check[king.color] + ' \u043A\u043E\u0440\u043E\u043B\u044C \u0432 \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u043E\u0441\u0442\u0438';
 	},
 	set mate(king) {
 		console.warn(king.value, 'mated');
-		// if(king.inDanger)
-		// 	checkmateLabel.innerHTML = `${this.locale.ru.mate[king.color]} королю поставлен мат`;
-		// else checkmateLabel.innerHTML = `${this.locale.ru.check[king.color]} король в безопасности`;
+		if (king.inDanger) _domBinding.checkmateLabel.innerHTML = this.locale.mate[king.color] + ' \u043A\u043E\u0440\u043E\u043B\u044E \u043F\u043E\u0441\u0442\u0430\u0432\u043B\u0435\u043D \u043C\u0430\u0442';else _domBinding.checkmateLabel.innerHTML = this.locale.check[king.color] + ' \u043A\u043E\u0440\u043E\u043B\u044C \u0432 \u0431\u0435\u0437\u043E\u043F\u0430\u0441\u043D\u043E\u0441\u0442\u0438';
 	},
 	checkKings: function checkKings() {
 		var currentTurnColor = this.currentTurnColor,
@@ -211,19 +223,45 @@ var game = {
 		var beatableBy = currentKingCell.beatable(currentTurnColor);
 		// console.log(beatableBy);
 		// beatable === inDangerIfSideIs()
-		currentKing.inDanger = beatableBy.length > 0;
-		if (!currentKing.inDanger) return this.check = currentKing;
+		currentKing.mated = false;
+		currentKing.checked = beatableBy.length > 0;
+		if (!currentKing.checked) return this.check = currentKing;
 		var dangerousCellCanBeBeatean = beatableBy[0].beatable(-currentTurnColor).filter(function (cell) {
 			return cell.piece.value !== 9;
 		}).length > 0;
 		var kingCanMoveElsewhere = _moving.getMovableCells[9](currentKing.pos, currentTurnColor).length > 0;
+		var kingCanBeProtected = function kingCanBeProtected(_board, king) {
+			return _board.map(function (boardRow) {
+				return boardRow.filter(function (c) {
+					return c.piece && c.piece.color === king.color && c.piece.value !== 9;
+				});
+			})
+			// get cells with pieces matching king in question color
+			.reduce(function (pieces, row) {
+				return pieces.concat(row);
+			}, [])
+			// flatten array
+			.some(function (_ref) {
+				var piece = _ref.piece;
+				return _moving.getMovableCells[piece.value](piece.pos, king.color).length > 0;
+			});
+		};
+		// console.log(['t1', performance.now()]);
+		// console.log(kingCanBeProtected(board, currentKing));
+		// console.log(['t2', performance.now()]);
+		// TODO test and get lag oopinion on slower devices
+		// 6ms at 4GHz
+		// around 60-120ms at 4GHz/10x chrome slowdown, lag feeled
+		// around 30ms at 800MHz/5x chrome slowdown, lag feeled slightly
+		// Lags only when king is really in danger, so not that bad (that's cause first grabbed piece usually can move and we drop checking others)
 		if (beatableBy.length === 1) {
 			this.check = currentKing;
-			if (dangerousCellCanBeBeatean) return this.check = currentKing;else if (!kingCanMoveElsewhere && !dangerousCellCanBeBeatean) return this.mate = currentKing;
+			if (dangerousCellCanBeBeatean) return this.check = currentKing;else if (!kingCanMoveElsewhere && !dangerousCellCanBeBeatean && !kingCanBeProtected(_board3.default, currentKing)) return currentKing.mated = currentKing.color, this.mate = currentKing;
 		} else if (beatableBy.length >= 2 && !kingCanMoveElsewhere) {
-			currentKing.inDanger = true;
-			return this.mate = currentKing;
+			currentKing.checked = true;
+			return currentKing.mated = currentKing.color, this.mate = currentKing;
 		} else if (beatableBy.length >= 2) return this.check = currentKing;
+		return this.check = currentKing;
 	},
 
 	get nMoves() {
@@ -234,7 +272,16 @@ var game = {
 
 		this._nMoves = val;
 		this.turn = (this._nMoves + 1) % 2 ? 1 : -1;
-		this.checkKings();
+
+		var _checkKings = this.checkKings(),
+		    checked = _checkKings.checked,
+		    mated = _checkKings.mated;
+
+		if (checked) {
+			game.history.current.checkMove = true;
+			if (mated) game.history.current.mateMove = true;
+		}
+		if (checked || mated) game.history.updateHistoryView();
 		this.subscribers.forEach(function (sub) {
 			return sub.callback(_this._nMoves, sub.el);
 		});
@@ -290,11 +337,11 @@ var game = {
 							case 4:
 								_this2.current = _context.sent;
 
-								console.log(_this2.current.transofrmed);
+								// console.log(this.current.transofrmed);
 								game.nMoves += 1;
 								_this2.updateHistoryView();
 
-							case 8:
+							case 7:
 							case 'end':
 								return _context.stop();
 						}
@@ -350,14 +397,14 @@ var game = {
 				}, _callee2, _this3);
 			}))();
 		},
-		_move: function _move(_ref) {
+		_move: function _move(_ref2) {
 			var _this4 = this;
 
-			var from = _ref.from,
-			    to = _ref.to,
-			    transformed = _ref.transformed;
+			var from = _ref2.from,
+			    to = _ref2.to,
+			    transformed = _ref2.transformed;
 			return _asyncToGenerator(_regeneratorRuntime2.default.mark(function _callee3() {
-				var _to$pos, x, y, rook, fromValue, toValue, consumed, consumedPiece, prevMove, rooked, pipirka, selectionGroup, checkMove;
+				var _to$pos, x, y, rook, fromValue, toValue, consumed, consumedPiece, prevMove, rooked, pipirka, selectionGroup;
 
 				return _regeneratorRuntime2.default.wrap(function _callee3$(_context3) {
 					while (1) {
@@ -377,8 +424,8 @@ var game = {
 								from.piece.elem.animate(100).move(x, y);
 								from.piece.lastMove = 'white';
 								if (rook && from.piece && from.piece.value === 9) {
-									if (rook.pos.x === 5) rooked = { from: rook, to: _board2.default['20, ' + rook.pos.y] };
-									if (rook.pos.x === 40) rooked = { from: rook, to: _board2.default['30, ' + rook.pos.y] };
+									if (rook.pos.x === 5) rooked = { from: rook, to: _board3.default['20, ' + rook.pos.y] };
+									if (rook.pos.x === 40) rooked = { from: rook, to: _board3.default['30, ' + rook.pos.y] };
 									rooked.from.piece.elem.animate(100).move(rooked.to.pos.x, rooked.to.pos.y);
 									rooked.to.piece = rooked.from.piece;
 									rooked.from.piece = null;
@@ -404,7 +451,7 @@ var game = {
 										});
 									});
 
-									console.log('Have to be transformed', _domBinding.transformingWheel[from.piece.color]);
+									// console.log('Have to be transformed', transformingWheel[from.piece.color]);
 								} else if ((y === 25 || y === 20) && Math.abs(from.pos.y - y) === 10) to.rapeableAt = game.nMoves + 1;
 								if (to.toRape && from.piece.value === 1) {
 									consumed = to.toRape;
@@ -446,10 +493,26 @@ var game = {
 								}
 								to.piece.pos = to.pos;
 								from.piece = null;
-								checkMove = game.enemyKingCell.beatable(-game.currentTurnColor).length > 0;
-								return _context3.abrupt('return', { from: from, to: to, consumed: consumed, consumedPiece: consumedPiece, prevMove: prevMove, rooked: rooked, fromValue: fromValue, toValue: toValue, checkMove: checkMove, transformed: transformed });
+								// const { currentTurnColor, enemyKingCell } = game;
+								// const beatableBy = enemyKingCell.beatable(-currentTurnColor);
+								// const checkMove = beatableBy.length > 0;
+								// const checkMove = game.enemyKingCell.beatable(-game.currentTurnColor).length > 0;
+								// let mateMove = false;
+								// works only on debug, cause it skips checking otherwise
+								// if (checkMove) {
+								// 	debugger;
+								// 	const dangerousCellCanBeBeatean = beatableBy[0].beatable(currentTurnColor).filter(cell => cell.piece.value !== 9).length > 0;
+								// 	const kingCanMoveElsewhere = getMovableCells[9](enemyKingCell, -currentTurnColor).length > 0;
+								// 	if (beatableBy.length === 1) {
+								// 		if (!kingCanMoveElsewhere && !dangerousCellCanBeBeatean)
+								// 			mateMove = true;
+								// 	}
+								// 	else if (beatableBy.length >= 2 && !kingCanMoveElsewhere)
+								// 		mateMove = true;
+								// }
+								return _context3.abrupt('return', { from: from, to: to, consumed: consumed, consumedPiece: consumedPiece, prevMove: prevMove, rooked: rooked, fromValue: fromValue, toValue: toValue, transformed: transformed });
 
-							case 26:
+							case 25:
 							case 'end':
 								return _context3.stop();
 						}
@@ -477,7 +540,7 @@ var game = {
 				from.piece.value = transformed.from.piece;
 				from.piece.elem.node.href.baseVal = transformed.from.val;
 			}
-			if (to.piece.value === 1 && _board2.default[x + ', ' + (y - 5 * to.piece.color)].toRape) _board2.default[x + ', ' + (y - 5 * to.piece.color)].toRape = null;
+			if (to.piece.value === 1 && _board3.default[x + ', ' + (y - 5 * to.piece.color)].toRape) _board3.default[x + ', ' + (y - 5 * to.piece.color)].toRape = null;
 			if (rooked) {
 				rooked.to.piece.elem.animate(100).move(rooked.from.pos.x, rooked.from.pos.y);
 				rooked.from.piece = rooked.to.piece;
@@ -521,8 +584,8 @@ _domBinding.redoButton.addEventListener('click', function () {
 });
 
 (0, _utils.bind)(game, _domBinding.movesLabel, function (movesValue) {
-	return _domBinding.movesLabel.innerHTML = '\u0425\u043E\u0434 ' + (movesValue % 2 === 1 ? 'черных' : 'белых');
-});
+	return _domBinding.movesLabel.innerHTML = _locale2.default.localized.moves[movesValue % 2];
+} /* `Ход ${movesValue % 2 === 1 ? 'черных' : 'белых'}`*/);
 (0, _utils.bind)(game, _domBinding.undoButton, function (movesValue, elem) {
 	return elem.disabled = movesValue === 0;
 });
@@ -532,7 +595,7 @@ _domBinding.redoButton.addEventListener('click', function () {
 
 var piecesDict = function piecesDict(piece) {
 	var absValue = Math.abs(piece);
-	return absValue ? _locale.piecesTranscriptions[_locale.currentLocale][absValue] : '';
+	return absValue ? _locale2.default.localized.piecesTranscriptions[absValue] : '';
 };
 var listingFunction = function listingFunction(turn) {
 	if (turn) {
@@ -541,10 +604,11 @@ var listingFunction = function listingFunction(turn) {
 		    fromValue = turn.fromValue,
 		    toValue = turn.toValue,
 		    consumed = turn.consumed,
-		    checkMove = turn.checkMove;
+		    checkMove = turn.checkMove,
+		    mateMove = turn.mateMove;
 		// console.log(game.enemyKingCell, game.currentTurnColor, game.enemyKingCell.beatable(-game.currentTurnColor));
 
-		return '' + piecesDict(fromValue) + from.id + ' ' + (consumed ? 'x' : '-') + ' ' + piecesDict(toValue) + to.id + (checkMove ? ' x' : '');
+		return '' + piecesDict(fromValue) + from.id + ' ' + (consumed ? 'x' : '-') + ' ' + piecesDict(toValue) + to.id + (mateMove ? ' #' + kingIconsSVG(mateMove) : checkMove ? ' x' : '');
 	}
 	return '';
 };
@@ -590,7 +654,7 @@ exports.arrayFilledWithFilledCells = arrayFilledWithFilledCells;
 exports.bind = bind;
 exports.toPiece = toPiece;
 
-var _Piece = __webpack_require__(10);
+var _Piece = __webpack_require__(11);
 
 var _Piece2 = _interopRequireDefault(_Piece);
 
@@ -644,9 +708,10 @@ function bind() {
 	var elem = arguments[1];
 	var callback = arguments[2];
 
-	if (elem) setTimeout(function () {
-		return binder.subscribe(elem, callback);
-	}, 5);
+	if (elem)
+		// setTimeout(() =>
+		binder.subscribe(elem, callback);
+	// , 5);
 }
 function toPiece(element) {
 	return new _Piece2.default(element);
@@ -674,7 +739,7 @@ var _board2 = _interopRequireDefault(_board);
 
 var _utils = __webpack_require__(2);
 
-var _Cell = __webpack_require__(7);
+var _Cell = __webpack_require__(8);
 
 var _Cell2 = _interopRequireDefault(_Cell);
 
@@ -1095,9 +1160,110 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var currentLocale = window.navigator.languages && window.navigator.languages[0].slice(0, 2) || window.navigator.language.slice(0, 2) || 'de';
+
+var resources = [{
+	key: 'piecesTranscriptions',
+	de: {
+		9: 'K',
+		8: 'D',
+		7: 'S',
+		4: 'T',
+		3: 'L',
+		1: ''
+	},
+	en: {
+		9: 'K',
+		8: 'Q',
+		7: 'N',
+		4: 'R',
+		3: 'B',
+		1: 'P'
+	}
+}, {
+	key: 'moves',
+	en: {
+		'0': 'White\'s move',
+		'1': 'Black\'s move'
+	},
+	de: {
+		'0': 'Weiß am Zug',
+		'1': 'Schwarz am Zug'
+	}
+}, {
+	key: 'kingMoves',
+	ru: {
+		check: { 1: 'Белый', '-1': 'Черный' },
+		mate: { 1: 'Белому', '-1': 'Черному' }
+	},
+	en: {
+		check: { 1: 'White', '-1': 'Black' },
+		mate: { 1: 'White\'s', '-1': 'Black\'s' }
+	},
+	de: {
+		check: { 1: 't', '-1': 't' },
+		mate: { 1: 't\'s', '-1': 't\'s' }
+	}
+}];
+
+var availableLocales = resources.reduce(function (localeKeys, resource) {
+	return localeKeys.concat(Object.keys(resource));
+}, []).filter(function (a) {
+	return a !== 'key';
+});
+var _locale = resources.reduce(function (locale, resource, i) {
+	var resourceKey = resource.key;
+	return Object.keys(locale).reduce(function (total, localeKey) {
+		if (resource[localeKey]) total[localeKey][resourceKey] = resource[localeKey];else total[localeKey][resourceKey] = resource.en;
+		return total;
+	}, locale);
+}, availableLocales.reduce(function (a, b) {
+	a[b] = {};return a;
+}, {}));
+
+var Locale = function () {
+	function Locale() {
+		_classCallCheck(this, Locale);
+	}
+
+	_createClass(Locale, null, [{
+		key: 'currentLocale',
+		get: function get() {
+			return currentLocale;
+		},
+		set: function set(value) {
+			currentLocale = value;
+		}
+	}, {
+		key: 'localized',
+		get: function get() {
+			return _locale[currentLocale];
+		}
+	}]);
+
+	return Locale;
+}();
+
+exports.default = Locale;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _moving = __webpack_require__(3);
 
-var _dragHandlers = __webpack_require__(11);
+var _dragHandlers = __webpack_require__(12);
 
 var _utils = __webpack_require__(2);
 
@@ -1185,7 +1351,7 @@ var Cell = function () {
 exports.default = Cell;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1212,13 +1378,13 @@ module.exports = g;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1278,7 +1444,7 @@ var Piece = function () {
 exports.default = Piece;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1324,7 +1490,7 @@ var pieceDragEnd = exports.pieceDragEnd = function pieceDragEnd(event) {
 };
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1334,13 +1500,17 @@ var _board = __webpack_require__(0);
 
 var _board2 = _interopRequireDefault(_board);
 
-var _main = __webpack_require__(9);
+var _main = __webpack_require__(10);
 
 var _main2 = _interopRequireDefault(_main);
 
 var _domBinding = __webpack_require__(4);
 
 var binding = _interopRequireWildcard(_domBinding);
+
+var _locale = __webpack_require__(7);
+
+var _locale2 = _interopRequireDefault(_locale);
 
 var _moving = __webpack_require__(3);
 
@@ -1357,6 +1527,7 @@ var Settings = __webpack_require__(6).default;
 var DEV = true;
 if (DEV) {
 	window.board = _board2.default;
+	window._locale = _locale2.default;
 	// window.pieces = pieces;
 	window.game = game;
 	window.moves = _moving.getMovableCells;
@@ -1365,37 +1536,6 @@ if (DEV) {
 	game.reset();
 	console.warn('dev mode is on, consider truning it off before publishing');
 }
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var currentLocale = exports.currentLocale = 'de';
-
-var piecesTranscriptions = exports.piecesTranscriptions = {
-	de: {
-		9: 'K',
-		8: 'D',
-		7: 'S',
-		4: 'T',
-		3: 'L',
-		1: ''
-	},
-	en: {
-		9: 'K',
-		8: 'Q',
-		7: 'N',
-		4: 'R',
-		3: 'B',
-		1: 'P'
-	}
-};
 
 /***/ }),
 /* 14 */
@@ -1433,7 +1573,7 @@ if (hadRuntime) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 15 */
@@ -2176,7 +2316,7 @@ if (hadRuntime) {
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 16 */
