@@ -1,4 +1,7 @@
 @charset "UTF-8";
+html {
+  font-size: 1.25em; }
+
 .schachText {
   fill: #838B83;
   font-size: 2px;
@@ -37,24 +40,44 @@ svg rect {
   fill: rgba(120, 180, 255, 0.8); }
 
 button {
-  min-height: 24px;
-  max-height: 2em;
   border: none;
   outline: none;
-  background: none;
+  display: inline-block;
+  height: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1px 0.875rem;
+  background: #838b83;
+  color: white;
   cursor: pointer;
-  margin-left: 0;
-  padding: 0;
-  color: #8cd7e1;
-  font-family: Futura PT; }
+  box-sizing: border-box;
+  font-family: Futura PT, sans-serif;
+  font-size: 1rem; }
   button[disabled] {
     cursor: default; }
-    button[disabled] span.icon {
-      stroke: gray; }
-  button svg {
-    height: 2em;
-    width: 3em; }
-  button span.icon {
+
+button#undo, button#redo {
+  border: none;
+  outline: none;
+  display: inline-block;
+  height: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1px 0.875rem;
+  background: #838b83;
+  color: white;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: Futura PT, sans-serif;
+  font-size: 1rem;
+  padding: 1px 0;
+  background: none; }
+  button#undo[disabled], button#redo[disabled] {
+    cursor: default; }
+  button#undo[disabled] span.icon, button#redo[disabled] span.icon {
+    stroke: gray; }
+  button#undo svg, button#redo svg {
+    height: 1.4rem;
+    width: 2.4rem; }
+  button#undo span.icon, button#redo span.icon {
     fill: transparent;
     stroke: #4d4d4d;
     stroke-width: 3.6;
@@ -63,18 +86,29 @@ button {
     transition: 400ms all;
     height: 100%;
     display: inline-block; }
-  button:hover span {
-    stroke: #3bbbcc;
+  button#undo:hover span, button#redo:hover span {
+    stroke: #838b83;
     fill: white; }
 
+#history:empty + #print {
+  display: none; }
+
 span#moves {
+  border: none;
+  outline: none;
   display: inline-block;
+  height: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1px 0.875rem;
   background: #838b83;
   color: white;
-  height: 24px;
-  padding: 4px 14px;
-  border-radius: 24px;
-  box-shadow: 0px 0px 3px -1px #838b83; }
+  cursor: pointer;
+  box-sizing: border-box;
+  font-family: Futura PT, sans-serif;
+  font-size: 1rem;
+  cursor: default; }
+  span#moves[disabled] {
+    cursor: default; }
 
 .toggle-switch {
   position: absolute;
@@ -84,7 +118,7 @@ span#moves {
     opacity: 0; }
   .toggle-switch:checked ~ button {
     display: inline-block;
-    width: 3em;
+    width: 2.4rem;
     opacity: 1; }
   .toggle-switch + label {
     display: inline-block;
@@ -97,49 +131,50 @@ span#moves {
             user-select: none; }
 
 input.toggle-switch-round-flat + label {
-  width: 48px;
-  height: 24px;
-  border-radius: 24px;
-  background-color: gray;
-  transition: background 0.4s; }
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 1.5rem;
+  box-shadow: inset 0 0 0 2px #838b83;
+  background-color: #838b83;
+  color: white;
+  transition: background 400ms; }
   input.toggle-switch-round-flat + label:before, input.toggle-switch-round-flat + label:after {
     display: block;
     position: absolute;
+    background-color: #838b83;
     content: ""; }
   input.toggle-switch-round-flat + label:before {
-    content: 'Teacher';
-    top: 2px;
-    left: 2px;
-    bottom: 2px;
-    right: 2px;
-    border-radius: 24px;
-    background-color: #fff;
-    transition: background 0.4s, padding 0.4s; }
+    background: none;
+    transition: padding 400ms; }
   input.toggle-switch-round-flat + label:after {
-    top: 4px;
-    left: 4px;
-    bottom: 4px;
-    width: 16px;
-    border-radius: 16px;
-    background-color: gray;
+    top: 0.25rem;
+    left: 0.25rem;
+    background-color: white;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 1rem;
     transition: margin 0.4s, background 0.4s; }
 
 input.toggle-switch-round-flat:checked + label {
-  background-color: #8cd7e1; }
+  background-color: white; }
+  input.toggle-switch-round-flat:checked + label:before {
+    color: #838b83; }
   input.toggle-switch-round-flat:checked + label:after {
-    margin-left: 24px;
-    background-color: #3bbbcc; }
+    margin-left: 1.5rem;
+    background-color: #838b83; }
 
 input.toggle-switch-round-flat + label {
-  width: 76px; }
+  width: 4.5rem; }
   input.toggle-switch-round-flat + label:before {
-    padding-left: 20px; }
+    content: 'Debug';
+    padding-left: 1.5rem;
+    padding-top: 1px; }
 
 input.toggle-switch-round-flat:checked + label:before {
   padding-left: 4px; }
 
 input.toggle-switch-round-flat:checked + label:after {
-  margin-left: 52px; }
+  margin-left: 3rem; }
 
 body.no-dev > section.main-grid .meta {
   grid-template-areas: "moves teacher"; }
@@ -147,22 +182,22 @@ body.no-dev > section.main-grid .meta {
 body > section.main-grid {
   height: 100vh;
   box-sizing: border-box;
-  padding: 1em;
-  grid-gap: 1em;
+  padding: 1rem;
+  grid-gap: 1rem;
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: start;
   -ms-grid-columns: (1fr)[2];
       grid-template-columns: repeat(2, 1fr);
-  -ms-grid-rows: 2em auto;
-      grid-template-rows: 2em auto;
+  -ms-grid-rows: 1.4rem auto;
+      grid-template-rows: 1.4rem auto;
   grid-template-areas: "meta ." "board history"; }
   body > section.main-grid .meta {
     grid-area: meta;
     -ms-grid-columns: max-content auto;
         grid-template-columns: max-content auto;
     grid-template-areas: "teacher moves";
-    grid-gap: 0.8em; }
+    grid-gap: 0.3rem; }
     body > section.main-grid .meta #teacher-controls {
       grid-area: teacher; }
     body > section.main-grid .meta .moves {
@@ -177,23 +212,23 @@ body > section.main-grid {
 
 @media (max-width: 960px) {
   body > section.main-grid {
-    padding: .6em;
-    grid-gap: .6em;
+    padding: .6rem;
+    grid-gap: .6rem;
     -ms-grid-columns: (1fr)[3];
         grid-template-columns: repeat(3, 1fr);
     grid-template-areas: "meta meta ." "board board history"; } }
 
 @media (max-width: 740px) {
   body > section.main-grid {
-    padding: .4em .6em;
-    grid-gap: .6em;
+    padding: .4rem .6rem;
+    grid-gap: .6rem;
     -webkit-box-align: start;
         -ms-flex-align: start;
             align-items: start;
     -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
-    -ms-grid-rows: 2em auto auto;
-        grid-template-rows: 2em auto auto;
+    -ms-grid-rows: 1.4rem max-content auto;
+        grid-template-rows: 1.4rem max-content auto;
     grid-template-areas: "meta" "board" "history"; } }
 
 @supports (grid-area: any) {
@@ -208,31 +243,31 @@ body > section.main-grid {
   display: none; }
 
 .cell {
-  padding: 0 0.2em; }
+  padding: 0 0.2rem; }
 
 .hint {
-  font-size: 1em; }
+  font-size: 1rem; }
 
 .tz {
-  font-size: 1.2em; }
+  font-size: 1.2rem; }
   .tz span:before {
-    margin-right: 0.4em; }
+    margin-right: 0.4rem; }
 
 ul:first-child {
   padding: 0;
   margin: 0; }
 
 .error, .fixed, .fixed\? {
-  padding: 0 0.5em; }
+  padding: 0 0.5rem; }
 
 .error {
   background: orange; }
 
 .fixed {
-  background: rgba(140, 215, 225, 0.4); }
+  background: rgba(131, 139, 131, 0.4); }
 
 .fixed\? {
-  background: rgba(221, 243, 246, 0.4); }
+  background: rgba(184, 188, 184, 0.4); }
 
 .error:before {
   content: '[E] '; }
@@ -252,12 +287,13 @@ ul:first-child {
 #historyParent {
   display: block;
   counter-reset: history;
-  border: dotted 4px gray;
   padding: 4px; }
   #historyParent ul {
     list-style: none;
-    margin: 0; }
+    margin: 0;
+    page-break-inside: avoid; }
     #historyParent ul li {
+      page-break-after: always;
       display: inline-block;
       padding: 0px 3px;
       margin-left: 2px; }
@@ -273,14 +309,29 @@ ul:first-child {
     #historyParent ul span.icon {
       padding: 0; }
       #historyParent ul span.icon svg {
-        width: 1em;
-        height: 1em; }
+        width: 1rem;
+        height: 1rem; }
     #historyParent ul span.black {
       background: black;
       color: #e6e6e6; }
     #historyParent ul span.white {
       background: #e6e6e6;
       color: black; }
+
+@media print {
+  button, #debug {
+    display: none; }
+  body > section.main-grid .meta {
+    display: none; }
+  body > section.main-grid {
+    -ms-grid-rows: max-content auto;
+        grid-template-rows: max-content auto;
+    grid-template-areas: "board" "history"; }
+  #history {
+    -webkit-print-color-adjust: exact;
+    background: gray; }
+  #debug {
+    display: none !important; } }
 
 body {
   font-family: Futura PT;

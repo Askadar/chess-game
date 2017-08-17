@@ -1052,6 +1052,10 @@ var _gsapTimeline2 = _interopRequireDefault(_gsapTimeline);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var teachSwitch = exports.teachSwitch = document.getElementById('teacherMode');
+var print = document.getElementById('print');
+print.addEventListener('click', function () {
+	return window.print();
+});
 var undoButton = exports.undoButton = document.getElementById('undo');
 var redoButton = exports.redoButton = document.getElementById('redo');
 var movesLabel = exports.movesLabel = document.getElementById('moves');
@@ -1062,7 +1066,7 @@ var debugInfo = exports.debugInfo = document.getElementById('debug');
 // const historyWhite = history.children[0];
 var historyButtons = exports.historyButtons = [undoButton, redoButton];
 historyButtons.tween = new _gsapTimeline2.default({ paused: true });
-historyButtons.tween.fromTo(historyButtons, 0.5, { opacity: 1 }, { opacity: 0 }).fromTo(historyButtons, 0.5, { width: '3em' }, { width: 0 });
+historyButtons.tween.fromTo(historyButtons, 0.2, { opacity: 1 }, { opacity: 0 }).fromTo(historyButtons, 0.2, { width: '2.4rem' }, { width: 0 });
 // .fromTo(historyButtons, 0.01, { display: 'inline-block' }, { display: 'none' });
 
 var wheel = _svgjs2.default.get('transformer');
@@ -1162,7 +1166,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var currentLocale = window.navigator.languages && window.navigator.languages[0].slice(0, 2) || window.navigator.language.slice(0, 2) || 'de';
+var currentLocale = window.navigator.languages && window.navigator.languages[0].slice(0, 2) || window.navigator.language.slice(0, 2) || 'en';
 
 var resources = [{
 	key: 'piecesTranscriptions',
@@ -1187,6 +1191,10 @@ var resources = [{
 	en: {
 		'0': 'White\'s move',
 		'1': 'Black\'s move'
+	},
+	ru: {
+		'0': 'Ход белых',
+		'1': 'Ход черных'
 	},
 	de: {
 		'0': 'Weiß am Zug',
